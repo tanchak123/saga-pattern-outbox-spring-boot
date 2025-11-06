@@ -14,7 +14,7 @@ public class KafkaConfig {
     private static final Integer TOPIC_REPLICATION_FACTOR = 3;
     private static final Integer TOPIC_PARTITIONS = 3;
 
-    @Value("orders.events.topic.name")
+    @Value("${orders.events.topic.name}")
     private String orderEventsTopicName;
 
 
