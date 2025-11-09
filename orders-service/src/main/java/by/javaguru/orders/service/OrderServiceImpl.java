@@ -1,13 +1,19 @@
 package by.javaguru.orders.service;
 
 import by.javaguru.core.dto.Order;
-import by.javaguru.core.dto.OrderCreatedEvent;
+import by.javaguru.core.dto.command.OrderApproveCommand;
+import by.javaguru.core.dto.events.OrderApprovedEvent;
+import by.javaguru.core.dto.events.OrderCreatedEvent;
 import by.javaguru.core.types.OrderStatus;
 import by.javaguru.orders.dao.jpa.entity.OrderEntity;
 import by.javaguru.orders.dao.jpa.repository.OrderRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -41,6 +47,34 @@ public class OrderServiceImpl implements OrderService {
 
         kafkaTemplate.send(orderEventsTopicName, placeOrder);
 
+        return new Order(
+                entity.getId(),
+                entity.getCustomerId(),
+                entity.getProductId(),
+                entity.getProductQuantity(),
+                entity.getStatus());
+    }
+
+    @Override
+    @Transactional
+    public Order approveOrder(UUID orderId) {
+        OrderEntity entity = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
+        entity.setStatus(OrderStatus.APPROVED);
+        return new Order(
+                entity.getId(),
+                entity.getCustomerId(),
+                entity.getProductId(),
+                entity.getProductQuantity(),
+                entity.getStatus());
+    }
+
+    @Override
+    @Transactional
+    public Order rejectOrder(UUID orderId) {
+        OrderEntity entity = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
+        entity.setStatus(OrderStatus.REJECTED);
         return new Order(
                 entity.getId(),
                 entity.getCustomerId(),

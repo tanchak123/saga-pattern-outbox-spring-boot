@@ -41,7 +41,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"productId\": \"736643d8-7a6f-4aaf-85f9-d27a6d61a584\",\r\n    \"productQuantity\": 1,\r\n    \"customerId\": \"136643d8-7a6f-4aaf-85f9-d27a6d61a584\"\r\n}",
+					"raw": "{\r\n    \"productId\": \"7f5d7b09-879b-4184-8cf3-a98c084edab3\",\r\n    \"productQuantity\": 2,\r\n    \"customerId\": \"136643d8-7a6f-4aaf-85f9-d27a6d61a584\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -87,14 +87,15 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/0ecf32eb-09ef-46ad-b7ed-47f41c9984af/history",
+					"raw": "http://localhost:8080/orders/145809c7-3bcf-4663-92f6-56155dfeebfb/history",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"0ecf32eb-09ef-46ad-b7ed-47f41c9984af",
+						"orders",
+						"145809c7-3bcf-4663-92f6-56155dfeebfb",
 						"history"
 					]
 				}

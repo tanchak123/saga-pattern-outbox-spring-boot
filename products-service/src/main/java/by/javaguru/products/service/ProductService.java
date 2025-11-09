@@ -8,6 +8,6 @@ import java.util.UUID;
 public interface ProductService {
     List<Product> findAll();
     Product reserve(Product desiredProduct, UUID orderId);
-    void cancelReservation(Product productToCancel, UUID orderId);
+    public void cancelReservation(UUID productId, Integer quantity);
     Product save(Product product);
 }
