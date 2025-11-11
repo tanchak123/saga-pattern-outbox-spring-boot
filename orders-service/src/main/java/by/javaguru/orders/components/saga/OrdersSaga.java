@@ -1,4 +1,4 @@
-package by.javaguru.orders.saga;
+package by.javaguru.orders.components.saga;
 
 import by.javaguru.core.dto.command.*;
 import by.javaguru.core.dto.events.*;

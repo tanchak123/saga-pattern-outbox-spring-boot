@@ -1,32 +1,27 @@
 package by.javaguru.orders.service;
 
 import by.javaguru.core.dto.Order;
-import by.javaguru.core.dto.command.OrderApproveCommand;
-import by.javaguru.core.dto.events.OrderApprovedEvent;
 import by.javaguru.core.dto.events.OrderCreatedEvent;
 import by.javaguru.core.types.OrderStatus;
 import by.javaguru.orders.dao.jpa.entity.OrderEntity;
 import by.javaguru.orders.dao.jpa.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
     private final String orderEventsTopicName;
+    private final OutboxService outboxService;
 
     public OrderServiceImpl(OrderRepository orderRepository,
-                            KafkaTemplate<String, Object> kafkaTemplate,
-                            @Value("${orders.events.topic.name}") String orderEventsTopicName) {
+                            @Value("${orders.events.topic.name}") String orderEventsTopicName, OutboxService outboxService) {
         this.orderRepository = orderRepository;
-        this.kafkaTemplate = kafkaTemplate;
         this.orderEventsTopicName = orderEventsTopicName;
+        this.outboxService = outboxService;
     }
 
     @Override
@@ -45,8 +40,7 @@ public class OrderServiceImpl implements OrderService {
                 entity.getProductQuantity()
         );
 
-        kafkaTemplate.send(orderEventsTopicName, placeOrder);
-
+        outboxService.saveEvent(placeOrder, placeOrder.getOrderId().toString());
         return new Order(
                 entity.getId(),
                 entity.getCustomerId(),
